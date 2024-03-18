@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>id.co.app</groupId>
-    <artifactId>wms-web</artifactId>
+    <artifactId>wms-master</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -18,21 +18,5 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <!-- Dependency to wms-security module -->
-        <dependency>
-            <groupId>id.co.app</groupId>
-            <artifactId>wms-security</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>id.co.app</groupId>
-            <artifactId>wms-master</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <!-- Other dependencies for wms-web -->
-        <!-- Add your other dependencies here -->
-    </dependencies>
 
 </project>

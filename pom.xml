@@ -17,6 +17,7 @@
     <modules>
         <module>wms-web</module>
         <module>wms-security</module>
+        <module>wms-master</module>
     </modules>
     <properties>
         <java.version>17</java.version>
