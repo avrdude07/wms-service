@@ -26,5 +26,5 @@ public class Order {
     private Date date;
 
     @Column(length = 100)
-    private String Customer ;
+    private String customer;
 }
