@@ -1,5 +1,6 @@
 package id.co.app.services;
 
+import id.co.app.constant.Constants;
 import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.StockRequestDTO;
 import id.co.app.model.entities.Stock;
@@ -22,9 +23,6 @@ import java.util.*;
 @Slf4j
 @RequiredArgsConstructor
 public class StockService {
-
-    private static final String RESPONSE = "response";
-    private static final String ERROR = "error";
 
     private final StockRepository stockRepository;
 
@@ -59,31 +57,31 @@ public class StockService {
 
         Stock checkStock= stockRepository.findByProductName(newStock.getProductName());
         if (checkStock != null){
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Data Stock Sudah Ada");
+            map.put(Constants.RESPONSE.getValue(), "fail");
+            map.put(Constants.ERROR.getValue(), "Data Stock Sudah Ada");
             throw new GeneralException(map);
         }
         stockRepository.save(newStock);
-        map.put(RESPONSE, "Insert stock successfully");
+        map.put(Constants.RESPONSE.getValue(), "Insert stock successfully");
     }
 
     public void deleteStock(Long studentId, Map<String, Object> map) {
         boolean exists = stockRepository.existsById(studentId);
         if(!exists){
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "student with id " + studentId + " does not exists");
+            map.put(Constants.RESPONSE.getValue(), "fail");
+            map.put(Constants.ERROR.getValue(), "student with id " + studentId + " does not exists");
             throw new GeneralException(map);
         }
         stockRepository.deleteById(studentId);
-        map.put(RESPONSE, "Delete stock successfully");
+        map.put(Constants.RESPONSE.getValue(), "Delete stock successfully");
     }
 
     public  void updateStock(Long id, StockRequestDTO stockRequestDTO, Map<String, Object> map) {
         Optional<Stock> optionalStock = stockRepository.findById(id);
 
         if (optionalStock.isEmpty()) {
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Stock not found with id: " + id);
+            map.put(Constants.RESPONSE.getValue(), "fail");
+            map.put(Constants.ERROR.getValue(), "Stock not found with id: " + id);
             throw new GeneralException(map);
         }
         Stock existingStock = optionalStock.get();
@@ -91,13 +89,13 @@ public class StockService {
         // Periksa apakah nama produk yang diberikan sudah digunakan oleh entitas lain
         if (!existingStock.getProductName().equals(stockRequestDTO.getProductName())) {
             if (stockRepository.existsByProductName(stockRequestDTO.getProductName())) {
-                map.put(RESPONSE, "fail");
-                map.put(ERROR, "Product name already exists: " + stockRequestDTO.getProductName());
+                map.put(Constants.RESPONSE.getValue(), "fail");
+                map.put(Constants.ERROR.getValue(), "Product name already exists: " + stockRequestDTO.getProductName());
                 throw new GeneralException(map);
             }
         } else {
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Product name already exists: " + stockRequestDTO.getProductName());
+            map.put(Constants.RESPONSE.getValue(), "fail");
+            map.put(Constants.ERROR.getValue(), "Product name already exists: " + stockRequestDTO.getProductName());
             throw new GeneralException(map);
         }
 
@@ -107,7 +105,7 @@ public class StockService {
         existingStock.setCourier(stockRequestDTO.getCourier());
 
         stockRepository.save(existingStock);
-        map.put(RESPONSE, "Update stock successfully");
+        map.put(Constants.RESPONSE.getValue(), "Update stock successfully");
     }
     @Transactional
     public void reduceStock(String productName, int quantity, Map<String, Object> map) {
@@ -118,16 +116,16 @@ public class StockService {
                 stock.setQuantity(currentQuantity - quantity);
                 stockRepository.save(stock);
             } else {
-                map.put(RESPONSE, "fail");
-                map.put(ERROR, "Insufficient stock available");
+                map.put(Constants.RESPONSE.getValue(), "fail");
+                map.put(Constants.ERROR.getValue(), "Insufficient stock available");
                 throw new GeneralException(map);
             }
         } else {
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Product not found in stock");
+            map.put(Constants.RESPONSE.getValue(), "fail");
+            map.put(Constants.ERROR.getValue(), "Product not found in stock");
             throw new GeneralException(map);
         }
-        map.put(RESPONSE, "Order placed successfully");
+        map.put(Constants.RESPONSE.getValue(), "Order placed successfully");
     }
 
 }

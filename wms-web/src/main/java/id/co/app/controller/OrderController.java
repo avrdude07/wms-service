@@ -1,5 +1,6 @@
 package id.co.app.controller;
 
+import id.co.app.constant.Constants;
 import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.OrderRequestDTO;
 import id.co.app.model.entities.Order;
@@ -64,8 +65,8 @@ public class OrderController {
         } catch (Exception e){
             Map<String, Object> errorMap = new HashMap<>();
             log.error("An unexpected error occurred while processing order: {}", e.getMessage());
-            errorMap.put("response", "fail");
-            errorMap.put("error", e.getMessage());
+            errorMap.put(Constants.RESPONSE.getValue(), Constants.FAIL.getValue());
+            errorMap.put(Constants.ERROR.getValue(), e.getMessage());
             return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
