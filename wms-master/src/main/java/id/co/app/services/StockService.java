@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
@@ -63,7 +64,7 @@ public class StockService {
             throw new GeneralException(map);
         }
         stockRepository.save(newStock);
-        map.put(RESPONSE, "success");
+        map.put(RESPONSE, "Insert stock successfully");
     }
 
     public void deleteStock(Long studentId, Map<String, Object> map) {
@@ -74,7 +75,7 @@ public class StockService {
             throw new GeneralException(map);
         }
         stockRepository.deleteById(studentId);
-        map.put(RESPONSE, "success");
+        map.put(RESPONSE, "Delete stock successfully");
     }
 
     public  void updateStock(Long id, StockRequestDTO stockRequestDTO, Map<String, Object> map) {
@@ -106,7 +107,27 @@ public class StockService {
         existingStock.setCourier(stockRequestDTO.getCourier());
 
         stockRepository.save(existingStock);
-        map.put(RESPONSE, "success");
+        map.put(RESPONSE, "Update stock successfully");
+    }
+    @Transactional
+    public void reduceStock(String productName, int quantity, Map<String, Object> map) {
+        Stock stock = stockRepository.findByProductName(productName);
+        if (stock != null) {
+            int currentQuantity = stock.getQuantity();
+            if (currentQuantity >= quantity) {
+                stock.setQuantity(currentQuantity - quantity);
+                stockRepository.save(stock);
+            } else {
+                map.put(RESPONSE, "fail");
+                map.put(ERROR, "Insufficient stock available");
+                throw new GeneralException(map);
+            }
+        } else {
+            map.put(RESPONSE, "fail");
+            map.put(ERROR, "Product not found in stock");
+            throw new GeneralException(map);
+        }
+        map.put(RESPONSE, "Order placed successfully");
     }
 
 }

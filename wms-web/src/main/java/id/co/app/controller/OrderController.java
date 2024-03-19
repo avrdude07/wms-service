@@ -1,5 +1,7 @@
 package id.co.app.controller;
 
+import id.co.app.exception.GeneralException;
+import id.co.app.model.dto.OrderRequestDTO;
 import id.co.app.model.entities.Order;
 import id.co.app.services.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -7,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,6 +49,24 @@ public class OrderController {
             map.put("total", "0");
             log.error(String.format(Arrays.toString(e.getStackTrace())));
             return ResponseEntity.badRequest().body(map);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            orderService.placeOrder(orderRequestDTO, map);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } catch (GeneralException e) {
+            log.error("An error occurred while processing order: {}", e.getErrorMap());
+            return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            Map<String, Object> errorMap = new HashMap<>();
+            log.error("An unexpected error occurred while processing order: {}", e.getMessage());
+            errorMap.put("response", "fail");
+            errorMap.put("error", e.getMessage());
+            return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
