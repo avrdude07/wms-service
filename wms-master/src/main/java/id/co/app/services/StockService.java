@@ -1,5 +1,6 @@
 package id.co.app.services;
 
+import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.StockRequestDTO;
 import id.co.app.model.entities.Stock;
 import id.co.app.repositories.StockRepository;
@@ -47,9 +48,7 @@ public class StockService {
         }
     }
 
-    public Map<String, Object> addNewStock(StockRequestDTO stockRequestDTO) {
-        Map<String, Object> map = new HashMap<>();
-
+    public void addNewStock(StockRequestDTO stockRequestDTO, Map<String, Object> map) {
         Date newDate = new Date();
         Stock newStock = new Stock();
         newStock.setProductName(stockRequestDTO.getProductName());
@@ -61,34 +60,30 @@ public class StockService {
         if (checkStock != null){
             map.put(RESPONSE, "fail");
             map.put(ERROR, "Data Stock Sudah Ada");
-            return map;
+            throw new GeneralException(map);
         }
         stockRepository.save(newStock);
         map.put(RESPONSE, "success");
-        return map;
     }
 
-    public Map<String, Object> deleteStock(Long studentId) {
-        Map<String, Object> map = new HashMap<>();
+    public void deleteStock(Long studentId, Map<String, Object> map) {
         boolean exists = stockRepository.existsById(studentId);
         if(!exists){
             map.put(RESPONSE, "fail");
             map.put(ERROR, "student with id " + studentId + " does not exists");
-            return map;
+            throw new GeneralException(map);
         }
         stockRepository.deleteById(studentId);
         map.put(RESPONSE, "success");
-        return map;
     }
 
-    public  Map<String, Object> updateStock(Long id, StockRequestDTO stockRequestDTO) {
-        Map<String, Object> map = new HashMap<>();
+    public  void updateStock(Long id, StockRequestDTO stockRequestDTO, Map<String, Object> map) {
         Optional<Stock> optionalStock = stockRepository.findById(id);
 
         if (optionalStock.isEmpty()) {
             map.put(RESPONSE, "fail");
             map.put(ERROR, "Stock not found with id: " + id);
-            return map;
+            throw new GeneralException(map);
         }
         Stock existingStock = optionalStock.get();
 
@@ -97,8 +92,12 @@ public class StockService {
             if (stockRepository.existsByProductName(stockRequestDTO.getProductName())) {
                 map.put(RESPONSE, "fail");
                 map.put(ERROR, "Product name already exists: " + stockRequestDTO.getProductName());
-                return map;
+                throw new GeneralException(map);
             }
+        } else {
+            map.put(RESPONSE, "fail");
+            map.put(ERROR, "Product name already exists: " + stockRequestDTO.getProductName());
+            throw new GeneralException(map);
         }
 
         // Update atribut lain jika diperlukan
@@ -108,7 +107,6 @@ public class StockService {
 
         stockRepository.save(existingStock);
         map.put(RESPONSE, "success");
-        return map;
     }
 
 }

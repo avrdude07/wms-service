@@ -1,5 +1,6 @@
 package id.co.app.controller;
 
+import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.StockRequestDTO;
 import id.co.app.model.entities.Stock;
 import id.co.app.services.StockService;
@@ -54,25 +55,46 @@ public class StockController {
     @PostMapping
     public ResponseEntity<Object> addStock(@RequestBody StockRequestDTO stockRequestDTO) {
         Map<String, Object> map = new HashMap<>();
-        map = stockService.addNewStock(stockRequestDTO);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        try {
+            stockService.addNewStock(stockRequestDTO, map);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } catch (GeneralException e) {
+            log.error("An error occurred while updating stock: {}", e.getErrorMap());
+            return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error("An unexpected error occurred while updating   stock: {}", e.getMessage());
+            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @DeleteMapping(path = "{stockId}")
     public ResponseEntity<Object> deleteStudent(@PathVariable("stockId") Long stockId) {
         Map<String, Object> map = new HashMap<>();
-        map = stockService.deleteStock(stockId);
-        return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
+        try {
+            stockService.deleteStock(stockId, map);
+            return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
+        } catch (GeneralException e) {
+            log.error("An error occurred while deleting  stock: {}", e.getErrorMap());
+            return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error("An unexpected error occurred while deleting  stock: {}", e.getMessage());
+            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateStock(@PathVariable Long id, @RequestBody StockRequestDTO stockRequestDTO) {
         Map<String, Object> map = new HashMap<>();
-        map = stockService.updateStock(id, stockRequestDTO);
-        if (map.get("response").equals("success")){
+        try {
+            stockService.updateStock(id, stockRequestDTO, map);
             return new ResponseEntity<>(map, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        } catch (GeneralException e) {
+            log.error("An error occurred while updating stock: {}", e.getErrorMap());
+            return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            log.error("An unexpected error occurred while updating stock: {}", e.getMessage());
+            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
