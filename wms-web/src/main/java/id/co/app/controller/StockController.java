@@ -1,5 +1,6 @@
 package id.co.app.controller;
 
+import static id.co.app.constant.Constants.*;
 import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.StockRequestDTO;
 import id.co.app.model.entities.Stock;
@@ -35,17 +36,17 @@ public class StockController {
         Map<String, Object> map = new HashMap<>();
         try {
             Page<Stock> page =  stockService.getStocks(productName, fromDate, toDate, courier, offset, limit, sortBy, orderBy);
-            map.put("data", page.getContent());
-            map.put("limit", String.valueOf(page.getPageable().getPageSize()));
-            map.put("offset", String.valueOf(page.getPageable().getOffset() + 1));
-            map.put("total", String.valueOf(page.getTotalElements()));
+            map.put(DATA, page.getContent());
+            map.put(LIMIT, String.valueOf(page.getPageable().getPageSize()));
+            map.put(OFFSET, String.valueOf(page.getPageable().getOffset() + 1));
+            map.put(TOTAL, String.valueOf(page.getTotalElements()));
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
             log.error("Error Get Data From Table Stock " + e.getMessage());
-            map.put("data", "");
-            map.put("message", "Error Get Data From Table Stock " + e.getMessage());
-            map.put("status", "400");
-            map.put("total", "0");
+            map.put(DATA, "");
+            map.put(MESSAGE, "Error Get Data From Table Stock " + e.getMessage());
+            map.put(STATUS, "400");
+            map.put(TOTAL, "0");
             log.error(String.format(Arrays.toString(e.getStackTrace())));
             return ResponseEntity.badRequest().body(map);
         }
@@ -62,8 +63,11 @@ public class StockController {
             log.error("An error occurred while updating stock: {}", e.getErrorMap());
             return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            Map<String, Object> errorMap = new HashMap<>();
             log.error("An unexpected error occurred while updating   stock: {}", e.getMessage());
-            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            errorMap.put(RESPONSE, FAIL);
+            errorMap.put(ERROR, e.getMessage());
+            return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -78,8 +82,11 @@ public class StockController {
             log.error("An error occurred while deleting  stock: {}", e.getErrorMap());
             return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            Map<String, Object> errorMap = new HashMap<>();
             log.error("An unexpected error occurred while deleting  stock: {}", e.getMessage());
-            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            errorMap.put(RESPONSE, FAIL);
+            errorMap.put(ERROR, e.getMessage());
+            return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,8 +100,11 @@ public class StockController {
             log.error("An error occurred while updating stock: {}", e.getErrorMap());
             return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
+            Map<String, Object> errorMap = new HashMap<>();
             log.error("An unexpected error occurred while updating stock: {}", e.getMessage());
-            return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            errorMap.put(RESPONSE, FAIL);
+            errorMap.put(ERROR, e.getMessage());
+            return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

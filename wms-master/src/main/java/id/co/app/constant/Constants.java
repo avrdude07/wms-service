@@ -1,19 +1,17 @@
 package id.co.app.constant;
 
-public enum Constants {
+public class Constants {
+    public static final String DATA = "data";
+    public static final String ERROR = "error";
+    public static final String FAIL = "fail";
+    public static final String LIMIT = "limit";
+    public static final String MESSAGE = "message";
+    public static final String OFFSET = "offset";
+    public static final String RESPONSE = "response";
+    public static final String STATUS = "status";
+    public static final String SUCCESS = "success";
+    public static final String TOTAL = "total";
 
-    ERROR("error"),
-    FAIL("fail"),
-    SUCCESS("success"),
-    RESPONSE("response");
-
-    private final String value;
-
-    Constants(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
+    public Constants() {
     }
 }

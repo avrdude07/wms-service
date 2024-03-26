@@ -1,6 +1,6 @@
 package id.co.app.controller;
 
-import id.co.app.constant.Constants;
+import static id.co.app.constant.Constants.*;
 import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.OrderRequestDTO;
 import id.co.app.model.entities.Order;
@@ -37,17 +37,17 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         try {
             Page<Order> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
-            map.put("data", page.getContent());
-            map.put("limit", String.valueOf(page.getPageable().getPageSize()));
-            map.put("offset", String.valueOf(page.getPageable().getOffset() + 1));
-            map.put("total", String.valueOf(page.getTotalElements()));
+            map.put(DATA, page.getContent());
+            map.put(LIMIT, String.valueOf(page.getPageable().getPageSize()));
+            map.put(OFFSET, String.valueOf(page.getPageable().getOffset() + 1));
+            map.put(TOTAL, String.valueOf(page.getTotalElements()));
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error Get Data From Table Order " + e.getMessage());
-            map.put("data", "");
-            map.put("message", "Error Get Data From Table Order " + e.getMessage());
-            map.put("status", "400");
-            map.put("total", "0");
+            map.put(DATA, "");
+            map.put(MESSAGE, "Error Get Data From Table Order " + e.getMessage());
+            map.put(STATUS, "400");
+            map.put(TOTAL, "0");
             log.error(String.format(Arrays.toString(e.getStackTrace())));
             return ResponseEntity.badRequest().body(map);
         }
@@ -65,8 +65,8 @@ public class OrderController {
         } catch (Exception e){
             Map<String, Object> errorMap = new HashMap<>();
             log.error("An unexpected error occurred while processing order: {}", e.getMessage());
-            errorMap.put(Constants.RESPONSE.getValue(), Constants.FAIL.getValue());
-            errorMap.put(Constants.ERROR.getValue(), e.getMessage());
+            errorMap.put(RESPONSE, FAIL);
+            errorMap.put(ERROR, e.getMessage());
             return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
