@@ -1,8 +1,8 @@
 package id.co.app.controller;
 
 import static id.co.app.constant.Constants.*;
-import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.OrderRequestDTO;
+import id.co.app.model.dto.SuccessResponseDto;
 import id.co.app.model.entities.Order;
 import id.co.app.services.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -54,10 +54,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
-        Map<String, Object> map = new HashMap<>();
+    public ResponseEntity<SuccessResponseDto> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
         orderService.placeOrder(orderRequestDTO);
-        map.put(RESPONSE, "Order placed successfully");
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponseDto("Order placed successfully"), HttpStatus.OK);
     }
 }

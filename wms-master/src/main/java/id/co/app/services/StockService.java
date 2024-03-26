@@ -76,12 +76,12 @@ public class StockService {
     }
 
     @Transactional
-    public  void updateStock(Long id, StockRequestDTO stockRequestDTO) {
-        Optional<Stock> optionalStock = stockRepository.findById(id);
+    public  void updateStock(Long stockId, StockRequestDTO stockRequestDTO) {
+        Optional<Stock> optionalStock = stockRepository.findById(stockId);
 
         if (optionalStock.isEmpty()) {
             log.error("An error occurred while updating stock");
-            throw new GeneralException("Stock not found with id: " + id);
+            throw new GeneralException("Stock not found with id: " + stockId);
         }
         Stock existingStock = optionalStock.get();
 

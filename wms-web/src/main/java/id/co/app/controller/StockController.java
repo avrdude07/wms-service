@@ -1,8 +1,8 @@
 package id.co.app.controller;
 
 import static id.co.app.constant.Constants.*;
-import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.StockRequestDTO;
+import id.co.app.model.dto.SuccessResponseDto;
 import id.co.app.model.entities.Stock;
 import id.co.app.services.StockService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -54,26 +53,20 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addStock(@RequestBody StockRequestDTO stockRequestDTO) {
-        Map<String, Object> map = new HashMap<>();
+    public ResponseEntity<SuccessResponseDto> addStock(@RequestBody StockRequestDTO stockRequestDTO) {
         stockService.addNewStock(stockRequestDTO);
-        map.put(RESPONSE, "Insert stock successfully");
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponseDto("Insert stock successfully"), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "{stockId}")
-    public ResponseEntity<Object> deleteStudent(@PathVariable("stockId") Long stockId) {
-        Map<String, Object> map = new HashMap<>();
+    @DeleteMapping("/{stockId}")
+    public ResponseEntity<SuccessResponseDto> deleteStudent(@PathVariable("stockId") Long stockId) {
         stockService.deleteStock(stockId);
-        map.put(RESPONSE, "Delete stock successfully");
-        return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new SuccessResponseDto("Delete stock successfully"), HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateStock(@PathVariable Long id, @RequestBody StockRequestDTO stockRequestDTO) {
-        Map<String, Object> map = new HashMap<>();
-        stockService.updateStock(id, stockRequestDTO);
-        map.put(RESPONSE, "Update stock successfully");
-        return new ResponseEntity<>(map, HttpStatus.OK);
+    @PutMapping("/{stockId}")
+    public ResponseEntity<SuccessResponseDto> updateStock(@PathVariable("stockId") Long stockId, @RequestBody StockRequestDTO stockRequestDTO) {
+        stockService.updateStock(stockId, stockRequestDTO);
+        return new ResponseEntity<>(new SuccessResponseDto("Update stock successfully"), HttpStatus.OK);
     }
 }
