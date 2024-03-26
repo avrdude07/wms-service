@@ -56,18 +56,8 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
         Map<String, Object> map = new HashMap<>();
-        try {
-            orderService.placeOrder(orderRequestDTO, map);
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        } catch (GeneralException e) {
-            log.error("An error occurred while processing order: {}", e.getErrorMap());
-            return new ResponseEntity<>(e.getErrorMap(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            Map<String, Object> errorMap = new HashMap<>();
-            log.error("An unexpected error occurred while processing order: {}", e.getMessage());
-            errorMap.put(RESPONSE, FAIL);
-            errorMap.put(ERROR, e.getMessage());
-            return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        orderService.placeOrder(orderRequestDTO);
+        map.put(RESPONSE, "Order placed successfully");
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

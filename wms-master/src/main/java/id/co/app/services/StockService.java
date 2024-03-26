@@ -48,9 +48,10 @@ public class StockService {
     }
 
     @Transactional
-    public void addNewStock(StockRequestDTO stockRequestDTO, Map<String, Object> map) {
+    public void addNewStock(StockRequestDTO stockRequestDTO) {
         Date newDate = new Date();
         Stock newStock = new Stock();
+        newStock.setIdStock(stockRequestDTO.getIdStock());
         newStock.setProductName(stockRequestDTO.getProductName());
         newStock.setQuantity(stockRequestDTO.getQuantity());
         newStock.setDate(newDate); // Set tanggal dan waktu saat ini
@@ -58,48 +59,41 @@ public class StockService {
 
         Stock checkStock= stockRepository.findByProductName(newStock.getProductName());
         if (checkStock != null){
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Data Stock Sudah Ada");
-            throw new GeneralException(map);
+            log.error("An error occurred while updating stock");
+            throw new GeneralException("Data Stock Sudah Ada");
         }
         stockRepository.save(newStock);
-        map.put(RESPONSE, "Insert stock successfully");
     }
 
     @Transactional
-    public void deleteStock(Long studentId, Map<String, Object> map) {
+    public void deleteStock(Long studentId) {
         boolean exists = stockRepository.existsById(studentId);
         if(!exists){
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "student with id " + studentId + " does not exists");
-            throw new GeneralException(map);
+            log.error("An error occurred while deleting  stock");
+            throw new GeneralException("student with id " + studentId + " does not exists");
         }
         stockRepository.deleteById(studentId);
-        map.put(RESPONSE, "Delete stock successfully");
     }
 
     @Transactional
-    public  void updateStock(Long id, StockRequestDTO stockRequestDTO, Map<String, Object> map) {
+    public  void updateStock(Long id, StockRequestDTO stockRequestDTO) {
         Optional<Stock> optionalStock = stockRepository.findById(id);
 
         if (optionalStock.isEmpty()) {
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Stock not found with id: " + id);
-            throw new GeneralException(map);
+            log.error("An error occurred while updating stock");
+            throw new GeneralException("Stock not found with id: " + id);
         }
         Stock existingStock = optionalStock.get();
 
         // Periksa apakah nama produk yang diberikan sudah digunakan oleh entitas lain
         if (!existingStock.getProductName().equals(stockRequestDTO.getProductName())) {
             if (stockRepository.existsByProductName(stockRequestDTO.getProductName())) {
-                map.put(RESPONSE, "fail");
-                map.put(ERROR, "Product name already exists: " + stockRequestDTO.getProductName());
-                throw new GeneralException(map);
+                log.error("An error occurred while updating stock");
+                throw new GeneralException("Product name already exists: " + stockRequestDTO.getProductName());
             }
         } else {
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Product name already exists: " + stockRequestDTO.getProductName());
-            throw new GeneralException(map);
+            log.error("An error occurred while updating stock");
+            throw new GeneralException("Product name already exists: " + stockRequestDTO.getProductName());
         }
 
         // Update atribut lain jika diperlukan
@@ -108,10 +102,9 @@ public class StockService {
         existingStock.setCourier(stockRequestDTO.getCourier());
 
         stockRepository.save(existingStock);
-        map.put(RESPONSE, "Update stock successfully");
     }
     @Transactional
-    public void reduceStock(String productName, int quantity, Map<String, Object> map) {
+    public void reduceStock(String productName, int quantity) {
         Stock stock = stockRepository.findByProductName(productName);
         if (stock != null) {
             int currentQuantity = stock.getQuantity();
@@ -119,16 +112,13 @@ public class StockService {
                 stock.setQuantity(currentQuantity - quantity);
                 stockRepository.save(stock);
             } else {
-                map.put(RESPONSE, "fail");
-                map.put(ERROR, "Insufficient stock available");
-                throw new GeneralException(map);
+                log.error("An error occurred while processing order");
+                throw new GeneralException("Insufficient stock available");
             }
         } else {
-            map.put(RESPONSE, "fail");
-            map.put(ERROR, "Product not found in stock");
-            throw new GeneralException(map);
+            log.error("An error occurred while processing order");
+            throw new GeneralException("Product not found in stock");
         }
-        map.put(RESPONSE, "Order placed successfully");
     }
 
 }

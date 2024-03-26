@@ -2,7 +2,6 @@ package id.co.app.services;
 
 import id.co.app.model.dto.OrderRequestDTO;
 import id.co.app.model.entities.Order;
-import id.co.app.model.entities.Stock;
 import id.co.app.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import org.springframework.util.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -48,8 +46,8 @@ public class OrderService {
         }
     }
 
-    public void placeOrder(OrderRequestDTO orderRequestDTO, Map<String, Object> map) {
-        stockService.reduceStock(orderRequestDTO.getProductName(), orderRequestDTO.getSoldUnits(), map);
+    public void placeOrder(OrderRequestDTO orderRequestDTO) {
+        stockService.reduceStock(orderRequestDTO.getProductName(), orderRequestDTO.getSoldUnits());
 
         Date newDate = new Date();
         Order newOrder = new Order();
