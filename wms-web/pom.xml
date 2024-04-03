@@ -5,11 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>id.co.app</groupId>
-        <artifactId>wms-1.0</artifactId>
+        <artifactId>wmsApi-1.0</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>id.co.app</groupId>
     <artifactId>wms-web</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging> <!-- Change packaging to war -->
@@ -35,5 +34,31 @@
         <!-- Other dependencies for wms-web -->
         <!-- Add your other dependencies here -->
     </dependencies>
+
+    <build>
+        <finalName>wmsApi-1.0.0</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>id.co.app.Application</mainClass>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

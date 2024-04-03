@@ -5,11 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>id.co.app</groupId>
-        <artifactId>wms-1.0</artifactId>
+        <artifactId>wmsApi-1.0</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>id.co.app</groupId>
     <artifactId>wms-security</artifactId>
     <version>1.0.0</version>
 
