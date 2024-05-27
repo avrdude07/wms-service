@@ -59,7 +59,7 @@ public class StockController {
     }
 
     @DeleteMapping("/{stockId}")
-    public ResponseEntity<SuccessResponseDto> deleteStudent(@PathVariable("stockId") Long stockId) {
+    public ResponseEntity<SuccessResponseDto> deleteStock(@PathVariable("stockId") Long stockId) {
         stockService.deleteStock(stockId);
         return new ResponseEntity<>(new SuccessResponseDto("Delete stock successfully"), HttpStatus.NO_CONTENT);
     }

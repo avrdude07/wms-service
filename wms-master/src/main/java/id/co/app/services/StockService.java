@@ -66,13 +66,13 @@ public class StockService {
     }
 
     @Transactional
-    public void deleteStock(Long studentId) {
-        boolean exists = stockRepository.existsById(studentId);
+    public void deleteStock(Long stockId) {
+        boolean exists = stockRepository.existsById(stockId);
         if(!exists){
             log.error("An error occurred while deleting  stock");
-            throw new GeneralException("student with id " + studentId + " does not exists");
+            throw new GeneralException("stock with id " + stockId + " does not exists");
         }
-        stockRepository.deleteById(studentId);
+        stockRepository.deleteById(stockId);
     }
 
     @Transactional
