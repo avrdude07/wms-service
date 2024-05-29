@@ -1,7 +1,10 @@
 package id.co.app.controller;
 
 import static id.co.app.constant.Constants.*;
+
+import id.co.app.model.dto.ErrorResponseDto;
 import id.co.app.model.dto.OrderRequestDTO;
+import id.co.app.model.dto.ResponseApiDto;
 import id.co.app.model.dto.SuccessResponseDto;
 import id.co.app.model.entities.Order;
 import id.co.app.services.OrderService;
@@ -25,7 +28,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Object> getOrders(@RequestParam(required = false) String productName,
+    public ResponseEntity<ResponseApiDto> getOrders(@RequestParam(required = false) String productName,
                                             @RequestParam(required = false) String customer,
                                             @RequestParam(required = false) String fromDate,
                                             @RequestParam(required = false) String toDate,
@@ -35,26 +38,29 @@ public class OrderController {
                                             @RequestParam(defaultValue = "DESC") String orderBy
     ){
         Map<String, Object> map = new HashMap<>();
+        SuccessResponseDto successResponseDto = new SuccessResponseDto();
         try {
             Page<Order> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
-            map.put(DATA, page.getContent());
             map.put(LIMIT, String.valueOf(page.getPageable().getPageSize()));
             map.put(OFFSET, String.valueOf(page.getPageable().getOffset() + 1));
             map.put(TOTAL, String.valueOf(page.getTotalElements()));
-            return new ResponseEntity<>(map, HttpStatus.OK);
+            successResponseDto.setData(page.getContent());
+            successResponseDto.setMetaData(map);
+            return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
         } catch (Exception e) {
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto();
             log.error("Error Get Data From Table Order " + e.getMessage());
-            map.put(DATA, "");
             map.put(MESSAGE, "Error Get Data From Table Order " + e.getMessage());
             map.put(STATUS, "400");
             map.put(TOTAL, "0");
+            errorResponseDto.setErrors(map);
             log.error(String.format(Arrays.toString(e.getStackTrace())));
-            return ResponseEntity.badRequest().body(map);
+            return ResponseEntity.badRequest().body(successResponseDto);
         }
     }
 
     @PostMapping
-    public ResponseEntity<SuccessResponseDto> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<ResponseApiDto> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
         orderService.placeOrder(orderRequestDTO);
         return new ResponseEntity<>(new SuccessResponseDto("Order placed successfully"), HttpStatus.OK);
     }

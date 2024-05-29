@@ -7,16 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
-import static id.co.app.constant.Constants.*;
-
 @RestControllerAdvice
 @Slf4j
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(GeneralException.class)
     ResponseEntity<ErrorResponseDto> handleGeneralException(GeneralException generalException) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDto(FAIL, generalException.getError()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseDto(generalException.getError()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -24,7 +21,7 @@ public class ExceptionHandlerAdvice {
         log.error("Internal Server Error ", e);
         StackTraceElement[] stackTrace = e.getStackTrace();
         getErrorLocation(stackTrace);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponseDto(FAIL, e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponseDto(e.getMessage()));
     }
 
     private void getErrorLocation(StackTraceElement[] stackTrace) {

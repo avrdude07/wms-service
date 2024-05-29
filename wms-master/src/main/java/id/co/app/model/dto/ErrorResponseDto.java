@@ -1,11 +1,12 @@
 package id.co.app.model.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
-public class ErrorResponseDto {
-    private String response;
-    private String error;
+@NoArgsConstructor
+public class ErrorResponseDto extends ResponseApiDto{
+    private Object errors;
 }
