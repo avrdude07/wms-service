@@ -17,7 +17,11 @@ public class RequestIdInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        MDC.put(REQUEST_ID, UUID.randomUUID().toString());
+        String requestId = UUID.randomUUID().toString();
+        MDC.put(REQUEST_ID, requestId);
+
+        // Add requestId to response header
+        response.setHeader(REQUEST_ID, requestId);
 
         // Get the authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

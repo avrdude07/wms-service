@@ -1,9 +1,20 @@
 package id.co.app.model.dto;
 
-import lombok.Getter;
-import org.slf4j.MDC;
+import lombok.Data;
+import org.springframework.http.HttpStatus;
 
-@Getter
+@Data
 public class ResponseApiDto {
-    protected final String requestId = MDC.get("requestId");
+    private int code;
+    private String status;
+    private Response response;
+
+    public ResponseApiDto() {
+        this.response = new Response();
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.code = status.value();
+        this.status = status.getReasonPhrase();
+    }
 }

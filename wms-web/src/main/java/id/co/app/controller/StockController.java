@@ -1,6 +1,8 @@
 package id.co.app.controller;
 
 import static id.co.app.constant.Constants.*;
+
+import id.co.app.model.dto.ErrorResponseDto;
 import id.co.app.model.dto.StockRequestDTO;
 import id.co.app.model.dto.SuccessResponseDto;
 import id.co.app.model.entities.Stock;
@@ -33,21 +35,23 @@ public class StockController {
                                             @RequestParam(defaultValue = "DESC") String orderBy
                                             ){
         Map<String, Object> map = new HashMap<>();
+        SuccessResponseDto successResponseDto = new SuccessResponseDto();
         try {
             Page<Stock> page =  stockService.getStocks(productName, fromDate, toDate, courier, offset, limit, sortBy, orderBy);
-            map.put(DATA, page.getContent());
-            map.put(LIMIT, String.valueOf(page.getPageable().getPageSize()));
-            map.put(OFFSET, String.valueOf(page.getPageable().getOffset() + 1));
-            map.put(TOTAL, String.valueOf(page.getTotalElements()));
+            map.put(PAGE_SIZE, String.valueOf(page.getPageable().getPageSize()));
+            map.put(CURRENT_PAGE, String.valueOf(page.getPageable().getOffset() + 1));
+            map.put(TOTAL_PAGE, String.valueOf(page.getTotalPages()));
+            map.put(TOTAL_DATA, String.valueOf(page.getTotalElements()));
+            successResponseDto.setData(page.getContent());
+            successResponseDto.setPaging(map);
+            successResponseDto.setStatus(HttpStatus.OK);
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e){
-            log.error("Error Get Data From Table Stock " + e.getMessage());
-            map.put(DATA, "");
-            map.put(MESSAGE, "Error Get Data From Table Stock " + e.getMessage());
-            map.put(STATUS, "400");
-            map.put(TOTAL, "0");
-            log.error(String.format(Arrays.toString(e.getStackTrace())));
-            return ResponseEntity.badRequest().body(map);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+            log.error("Error Get Data From Table Stock ", e);
+            errorResponseDto.setErrors("Error Get Data From Table Stock " + e.getMessage());
+            errorResponseDto.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -55,18 +59,18 @@ public class StockController {
     @PostMapping
     public ResponseEntity<SuccessResponseDto> addStock(@RequestBody StockRequestDTO stockRequestDTO) {
         stockService.addNewStock(stockRequestDTO);
-        return new ResponseEntity<>(new SuccessResponseDto("Insert stock successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponseDto(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{stockId}")
     public ResponseEntity<SuccessResponseDto> deleteStock(@PathVariable("stockId") Long stockId) {
         stockService.deleteStock(stockId);
-        return new ResponseEntity<>(new SuccessResponseDto("Delete stock successfully"), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(new SuccessResponseDto(), HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{stockId}")
     public ResponseEntity<SuccessResponseDto> updateStock(@PathVariable("stockId") Long stockId, @RequestBody StockRequestDTO stockRequestDTO) {
         stockService.updateStock(stockId, stockRequestDTO);
-        return new ResponseEntity<>(new SuccessResponseDto("Update stock successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new SuccessResponseDto(), HttpStatus.OK);
     }
 }

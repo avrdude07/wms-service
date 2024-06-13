@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,27 +40,30 @@ public class OrderController {
         SuccessResponseDto successResponseDto = new SuccessResponseDto();
         try {
             Page<Order> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
-            map.put(LIMIT, String.valueOf(page.getPageable().getPageSize()));
-            map.put(OFFSET, String.valueOf(page.getPageable().getOffset() + 1));
-            map.put(TOTAL, String.valueOf(page.getTotalElements()));
+            map.put(PAGE_SIZE, String.valueOf(page.getPageable().getPageSize()));
+            map.put(CURRENT_PAGE, String.valueOf(page.getPageable().getOffset() + 1));
+            map.put(TOTAL_PAGE, String.valueOf(page.getTotalPages()));
+            map.put(TOTAL_DATA, String.valueOf(page.getTotalElements()));
             successResponseDto.setData(page.getContent());
-            successResponseDto.setMetaData(map);
+            successResponseDto.setPaging(map);
+            successResponseDto.setMessage("Success Get Data From Table Order");
+            successResponseDto.setStatus(HttpStatus.OK);
             return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
         } catch (Exception e) {
             ErrorResponseDto errorResponseDto = new ErrorResponseDto();
-            log.error("Error Get Data From Table Order " + e.getMessage());
-            map.put(MESSAGE, "Error Get Data From Table Order " + e.getMessage());
-            map.put(STATUS, "400");
-            map.put(TOTAL, "0");
-            errorResponseDto.setErrors(map);
-            log.error(String.format(Arrays.toString(e.getStackTrace())));
-            return ResponseEntity.badRequest().body(successResponseDto);
+            log.error("Error Get Data From Table Order ", e);
+            errorResponseDto.setErrors("Error Get Data From Table Order " + e.getMessage());
+            errorResponseDto.setStatus(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping
     public ResponseEntity<ResponseApiDto> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+        SuccessResponseDto successResponseDto = new SuccessResponseDto();
         orderService.placeOrder(orderRequestDTO);
-        return new ResponseEntity<>(new SuccessResponseDto("Order placed successfully"), HttpStatus.OK);
+        successResponseDto.setStatus(HttpStatus.OK);
+        successResponseDto.setMessage("Berhasil melakukan order");
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 }
