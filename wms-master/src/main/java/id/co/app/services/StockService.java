@@ -1,6 +1,5 @@
 package id.co.app.services;
 
-import static id.co.app.constant.Constants.*;
 import id.co.app.exception.GeneralException;
 import id.co.app.model.dto.StockRequestDTO;
 import id.co.app.model.entities.Stock;
@@ -54,7 +53,7 @@ public class StockService {
         newStock.setIdStock(stockRequestDTO.getIdStock());
         newStock.setProductName(stockRequestDTO.getProductName());
         newStock.setQuantity(stockRequestDTO.getQuantity());
-        newStock.setDate(newDate); // Set tanggal dan waktu saat ini
+        newStock.setCreatedDate(newDate); // Set tanggal dan waktu saat ini
         newStock.setCourier(stockRequestDTO.getCourier());
 
         Stock checkStock= stockRepository.findByProductName(newStock.getProductName());
@@ -107,7 +106,7 @@ public class StockService {
     public void reduceStock(String productName, int quantity) {
         Stock stock = stockRepository.findByProductName(productName);
         if (stock != null) {
-            int currentQuantity = stock.getQuantity();
+            double currentQuantity = stock.getQuantity();
             if (currentQuantity >= quantity) {
                 stock.setQuantity(currentQuantity - quantity);
                 stockRepository.save(stock);

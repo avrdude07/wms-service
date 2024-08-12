@@ -1,12 +1,11 @@
 package id.co.app.controller;
 
-import static id.co.app.constant.Constants.*;
-
+import id.co.app.helper.GeneralHelper;
 import id.co.app.model.dto.ErrorResponseDto;
 import id.co.app.model.dto.OrderRequestDTO;
 import id.co.app.model.dto.ResponseApiDto;
 import id.co.app.model.dto.SuccessResponseDto;
-import id.co.app.model.entities.Order;
+import id.co.app.model.entities.OrderRecord;
 import id.co.app.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,15 +38,9 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         SuccessResponseDto successResponseDto = new SuccessResponseDto();
         try {
-            Page<Order> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
-            map.put(PAGE_SIZE, String.valueOf(page.getPageable().getPageSize()));
-            map.put(CURRENT_PAGE, String.valueOf(page.getPageable().getOffset() + 1));
-            map.put(TOTAL_PAGE, String.valueOf(page.getTotalPages()));
-            map.put(TOTAL_DATA, String.valueOf(page.getTotalElements()));
-            successResponseDto.setData(page.getContent());
-            successResponseDto.setPaging(map);
+            Page<OrderRecord> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
+            GeneralHelper.setMetaData(successResponseDto, map, page);
             successResponseDto.setMessage("Success Get Data From Table Order");
-            successResponseDto.setStatus(HttpStatus.OK);
             return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
         } catch (Exception e) {
             ErrorResponseDto errorResponseDto = new ErrorResponseDto();

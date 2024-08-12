@@ -20,7 +20,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Query(value = "SELECT s FROM Stock s WHERE " +
             "(?1 IS NULL OR CONCAT(s.productName, '') LIKE %?1%) AND " +
             "(?2 IS NULL OR CONCAT(s.courier, '') LIKE %?2%) AND " +
-            "s.date BETWEEN ?3 AND ?4")
+            "s.createdDate BETWEEN ?3 AND ?4")
     Page<Stock> getStockPageFilterWithDate(String productName, String courier, Date startDate, Date endDate, Pageable pageable);
 
     Stock findByProductName(String productName);

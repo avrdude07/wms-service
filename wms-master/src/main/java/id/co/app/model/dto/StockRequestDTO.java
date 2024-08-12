@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class StockRequestDTO {
     private Long idStock;
     private String productName;
-    private Integer quantity;
+    private Double quantity;
     private String courier;
 }
