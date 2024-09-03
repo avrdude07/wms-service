@@ -46,8 +46,8 @@ public class OrderController {
             ErrorResponseDto errorResponseDto = new ErrorResponseDto();
             log.error("Error Get Data From Table Order ", e);
             errorResponseDto.setErrors("Error Get Data From Table Order " + e.getMessage());
-            errorResponseDto.setStatus(HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+            errorResponseDto.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
