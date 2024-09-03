@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "ORDER", schema = "APP")
+@Table(name = "ORDER_RECORD")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Order {
+public class OrderRecord {
     @Id
-    @SequenceGenerator(name = "order_sequence", sequenceName = "order_sequence", schema = "APP", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "order_sequence", sequenceName = "order_sequence", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_sequence")
     private int idOrder;
 
@@ -23,7 +23,7 @@ public class Order {
 
     private Integer soldUnits;
 
-    private Date date;
+    private Date createdDate;
 
     @Column(length = 100)
     private String customer;

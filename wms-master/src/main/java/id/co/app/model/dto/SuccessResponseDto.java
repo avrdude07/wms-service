@@ -1,10 +1,19 @@
 package id.co.app.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public class SuccessResponseDto extends ResponseApiDto{
+    public SuccessResponseDto() {
+        super();
+    }
 
-@Getter
-@AllArgsConstructor
-public class SuccessResponseDto {
-    private String response;
+    public void setData(Object data) {
+        this.getResponse().setData(data);
+    }
+
+    public void setPaging(Object paging) {
+        this.getResponse().setPaging(paging);
+    }
+
+    public void setMessage(String message) {
+        this.getResponse().setMessage(message);
+    }
 }

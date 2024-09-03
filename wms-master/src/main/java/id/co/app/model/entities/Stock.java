@@ -8,24 +8,27 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "STOCK", schema = "APP")
+@Table(name = "STOCK")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Stock {
     @Id
-    @SequenceGenerator(name = "stock_sequence", sequenceName = "stock_sequence", schema = "APP", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "stock_sequence", sequenceName = "stock_sequence", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_sequence")
     private Long idStock;
 
     @Column(length = 140)
     private String productName;
 
-    private Integer quantity;
+    private Double quantity;
 
-    private Date date;
+    private Date createdDate;
 
     @Column(length = 100)
-    private String courier ;
+    private String courier;
+
+    @Column(name = "satuan", length = 20)
+    private String satuan;
 
 }

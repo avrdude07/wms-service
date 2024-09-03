@@ -1,9 +1,11 @@
 package id.co.app.controller;
 
-import static id.co.app.constant.Constants.*;
+import id.co.app.helper.GeneralHelper;
+import id.co.app.model.dto.ErrorResponseDto;
 import id.co.app.model.dto.OrderRequestDTO;
+import id.co.app.model.dto.ResponseApiDto;
 import id.co.app.model.dto.SuccessResponseDto;
-import id.co.app.model.entities.Order;
+import id.co.app.model.entities.OrderRecord;
 import id.co.app.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Object> getOrders(@RequestParam(required = false) String productName,
+    public ResponseEntity<ResponseApiDto> getOrders(@RequestParam(required = false) String productName,
                                             @RequestParam(required = false) String customer,
                                             @RequestParam(required = false) String fromDate,
                                             @RequestParam(required = false) String toDate,
@@ -35,27 +36,27 @@ public class OrderController {
                                             @RequestParam(defaultValue = "DESC") String orderBy
     ){
         Map<String, Object> map = new HashMap<>();
+        SuccessResponseDto successResponseDto = new SuccessResponseDto();
         try {
-            Page<Order> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
-            map.put(DATA, page.getContent());
-            map.put(LIMIT, String.valueOf(page.getPageable().getPageSize()));
-            map.put(OFFSET, String.valueOf(page.getPageable().getOffset() + 1));
-            map.put(TOTAL, String.valueOf(page.getTotalElements()));
-            return new ResponseEntity<>(map, HttpStatus.OK);
+            Page<OrderRecord> page =  orderService.getOrders(productName, fromDate, toDate, customer, offset, limit, sortBy, orderBy);
+            GeneralHelper.setMetaData(successResponseDto, map, page);
+            successResponseDto.setMessage("Success Get Data From Table Order");
+            return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Error Get Data From Table Order " + e.getMessage());
-            map.put(DATA, "");
-            map.put(MESSAGE, "Error Get Data From Table Order " + e.getMessage());
-            map.put(STATUS, "400");
-            map.put(TOTAL, "0");
-            log.error(String.format(Arrays.toString(e.getStackTrace())));
-            return ResponseEntity.badRequest().body(map);
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+            log.error("Error Get Data From Table Order ", e);
+            errorResponseDto.setErrors("Error Get Data From Table Order " + e.getMessage());
+            errorResponseDto.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping
-    public ResponseEntity<SuccessResponseDto> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+    public ResponseEntity<ResponseApiDto> placeOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+        SuccessResponseDto successResponseDto = new SuccessResponseDto();
         orderService.placeOrder(orderRequestDTO);
-        return new ResponseEntity<>(new SuccessResponseDto("Order placed successfully"), HttpStatus.OK);
+        successResponseDto.setStatus(HttpStatus.OK);
+        successResponseDto.setMessage("Berhasil melakukan order");
+        return new ResponseEntity<>(successResponseDto, HttpStatus.OK);
     }
 }

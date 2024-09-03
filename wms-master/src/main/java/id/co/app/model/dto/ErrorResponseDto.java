@@ -1,11 +1,16 @@
 package id.co.app.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public class ErrorResponseDto extends ResponseApiDto{
+    public ErrorResponseDto() {
+        super();
+    }
 
-@Getter
-@AllArgsConstructor
-public class ErrorResponseDto {
-    private String response;
-    private String error;
+    public ErrorResponseDto(Object errors) {
+        super();
+        this.getResponse().setErrors(errors);
+    }
+
+    public void setErrors(Object errors) {
+        this.getResponse().setErrors(errors);
+    }
 }

@@ -1,7 +1,7 @@
 package id.co.app.services;
 
 import id.co.app.model.dto.OrderRequestDTO;
-import id.co.app.model.entities.Order;
+import id.co.app.model.entities.OrderRecord;
 import id.co.app.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -25,7 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final StockService stockService;
 
-    public Page<Order> getOrders(String productName, String fromDate, String toDate, String customer, int offset, int limit, String sortBy, String orderBy) throws ParseException {
+    public Page<OrderRecord> getOrders(String productName, String fromDate, String toDate, String customer, int offset, int limit, String sortBy, String orderBy) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Pageable pageable = null;
@@ -50,10 +49,10 @@ public class OrderService {
         stockService.reduceStock(orderRequestDTO.getProductName(), orderRequestDTO.getSoldUnits());
 
         Date newDate = new Date();
-        Order newOrder = new Order();
+        OrderRecord newOrder = new OrderRecord();
         newOrder.setProductName(orderRequestDTO.getProductName());
         newOrder.setSoldUnits(orderRequestDTO.getSoldUnits());
-        newOrder.setDate(newDate); // Set tanggal dan waktu saat ini
+        newOrder.setCreatedDate(newDate); // Set tanggal dan waktu saat ini
         newOrder.setCustomer(orderRequestDTO.getCustomer());
         orderRepository.save(newOrder);
     }
