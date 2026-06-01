@@ -39,7 +39,7 @@ pipeline {
             steps {
                 sh '''
                     scp wms-web/target/*.war hank@192.168.84.128:/spring-project/wmsapp/
-                    ssh hank@192.168.84.128: "sudo systemctl restart wms-api"
+                    ssh hank@192.168.84.128 "sudo systemctl restart wms-api"
                 '''
             }
         }
