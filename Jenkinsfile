@@ -5,6 +5,11 @@ pipeline {
         maven 'maven-3.9.15'
     }
 
+    parameters {
+        string(name: 'DEPLOY_HOST', defaultValue: '', description: 'Target deployment server')
+        string(name: 'DEPLOY_PASS', defaultValue: '', description: 'Password deployment server')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -38,8 +43,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    scp wms-web/target/*.war hank@192.168.84.128:/spring-project/wmsapp/
-                    ssh hank@192.168.84.128 "echo 'P@ssw0rd' | sudo -S systemctl restart wms-api"
+                    scp wms-web/target/*.war hank@${DEPLOY_HOST}:/spring-project/wmsapp/
+                    ssh hank@${DEPLOY_HOST} "echo '${DEPLOY_PASS}' | sudo -S systemctl restart wms-api"
                 '''
             }
         }
