@@ -38,8 +38,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    scp wms-web/target/*.war hank@localhost:/spring-project/wmsapp/
-                    ssh hank@localhost: "sudo systemctl restart wms-api"
+                    scp wms-web/target/*.war hank@192.168.84.128:/spring-project/wmsapp/
+                    ssh hank@192.168.84.128: "sudo systemctl restart wms-api"
                 '''
             }
         }
