@@ -36,7 +36,7 @@
     </dependencies>
 
     <build>
-        <finalName>wmsApi-1.0.0</finalName>
+        <finalName>wmsApi-1.0.1</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
